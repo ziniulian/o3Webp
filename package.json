@@ -1,0 +1,15 @@
+{
+	"name": "LZRwebp",
+	"version": "0.0.0",
+	"main": "index.js",
+	"dependencies": {
+		"express": "4.x",
+		"body-parser": "1.17.x",
+		"lzr": "~1.1.4"
+	},
+	"devDependencies": {},
+	"scripts": {
+		"start": "node index.js",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	}
+}
