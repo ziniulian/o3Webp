@@ -32,14 +32,24 @@ srv.ro.post("/ptth/", function (req, res) {
 
 srv.ro.post("/testDat/", function (req, res) {
 	if (req.body.dat) {
-		o = JSON.parse(req.body.dat);
-		if (o.buf) {
-			o.str = new Buffer(o.buf.data).toString();
+		var d, o;
+		if (req.body.dat[0] === "%") {
+			d = decodeURIComponent(req.body.dat);
+		} else {
+			d = req.body.dat;
 		}
-		res.json(o);
-	} else {
-		res.send("Err");
+		o = JSON.parse(d);
+		if (o) {
+			if (o.buf) {
+				o.str = new Buffer(o.buf.data).toString();
+			}
+			res.json(o);
+			res.end();
+			return;
+		}
 	}
+	res.send("Err");
+	res.end();
 });
 
 // LOGO图片
