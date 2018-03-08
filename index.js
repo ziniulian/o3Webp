@@ -22,6 +22,8 @@ var srv = new LZR.Node.Srv ({
 	port: process.env.OPENSHIFT_NODEJS_PORT || 80
 });
 
+var stres = "HTTP/1.1 200 OK\r\nAccept-Ranges: bytes";
+
 // 解析 post 参数
 srv.use("*", bodyParser.urlencoded({ extended: false }));
 
@@ -61,8 +63,8 @@ console.log(o.host + ":" + o.port + " c - end");
 			});
 			s.on("error", function () {});
 			if (o.buf) {
-console.log(o.host + ":" + o.port + " >> " + o.buf.data.length);
 				s.write(new Buffer(o.buf.data));
+console.log(o.host + ":" + o.port + " >> " + o.buf.data.length);
 			} else if (o.rok) {
 				c.write(new Buffer(o.rok));
 			} else {
