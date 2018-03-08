@@ -3,6 +3,7 @@ require("lzr");
 
 // post 参数解析工具
 var bodyParser = require("body-parser");
+var net = require("net");
 
 // LZR 子模块加载
 LZR.load([
@@ -23,6 +24,55 @@ var srv = new LZR.Node.Srv ({
 
 // 解析 post 参数
 srv.use("*", bodyParser.urlencoded({ extended: false }));
+
+srv.ro.post("/reLinkDat/", function (req, res) {
+	if (req.body.dat) {
+		var c = req.socket;
+		var s, o;
+		try {
+			if (req.body.dat[0] === "%") {
+				o = JSON.parse(decodeURIComponent(req.body.dat));
+			} else {
+				o = JSON.parse(req.body.dat);
+			}
+		} catch (e) {
+			res.status(404).send("Err");
+		}
+		if (o && o.host && o.port) {
+			c.removeAllListeners("data");
+			s = net.createConnection(o.port, o.host);
+			// c.pipe(s);
+			// s.pipe(c);
+			c.on("data", function(d) {
+				s.write(d);
+console.log(o.host + ":" + o.port + " >> " + d.length);
+			});
+			s.on("data", function(d) {
+				c.write(d);
+console.log(o.host + ":" + o.port + " <<---- " + d.length);
+			});
+			s.on("end", function() {
+				c.end();
+console.log(o.host + ":" + o.port + " s - end");
+			});
+			c.on("end", function() {
+				s.end();
+console.log(o.host + ":" + o.port + " c - end");
+			});
+			s.on("error", function () {});
+			if (o.buf) {
+console.log(o.host + ":" + o.port + " >> " + o.buf.data.length);
+				s.write(new Buffer(o.buf.data));
+			} else if (o.rok) {
+				c.write(new Buffer(o.rok));
+			} else {
+				res.status(404).send("Err");
+			}
+			return true;
+		}
+	}
+	res.status(404).send("Err");
+});
 
 srv.ro.post("/ptth/", function (req, res) {
 	if (!utNode.ptth(req, "net")) {
