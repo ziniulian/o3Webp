@@ -30,6 +30,18 @@ srv.ro.post("/ptth/", function (req, res) {
 	}
 });
 
+srv.ro.post("/testDat/", function (req, res) {
+	if (req.body.dat) {
+		o = JSON.parse(req.body.dat);
+		if (o.buf) {
+			o.str = new Buffer(o.buf.data).toString();
+		}
+		res.json(o);
+	} else {
+		res.send("Err");
+	}
+});
+
 // LOGO图片
 srv.ro.get("/favicon.ico", function (req, res) {
 	res.redirect(dmsrv.ds.main + "favicon.ico");
