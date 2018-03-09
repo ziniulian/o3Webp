@@ -108,7 +108,7 @@ console.log(o.host + ":" + o.port + " >> " + d.length);
 			s.on("data", pbuf);
 			c.on("data", ubuf);
 			s.on("end", function() {
-				c.end();
+				// c.end();
 console.log(o.host + ":" + o.port + " s - end");
 			});
 			c.on("end", function() {
