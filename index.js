@@ -56,7 +56,7 @@ utNode.unpckBuffer = function (d/*as:Object*/, st/*as:Object*/, tag/*as:Object*/
 					st.t --;
 					st.ts += "}";
 					if (st.t === 0) {
-// console.log("unpck : " + st.ts.length);
+console.log("unpck : " + st.ts.length);
 						var tt = new this.buf (JSON.parse(st.ts).data);
 						tag.write(tt);
 						st.ts = null;
@@ -77,7 +77,7 @@ utNode.unpckBuffer = function (d/*as:Object*/, st/*as:Object*/, tag/*as:Object*/
 // 数据封包
 utNode.pckBuffer = function (d/*as:Object*/, salt/*as:Object*/, tag/*as:Object*/) {
 	var t = JSON.stringify(d);
-// console.log("pck : " + t.length);
+console.log("pck : " + t.length);
 	tag.write(new this.buf(salt + (t.length) + "\r\n\r\n" + t));
 };
 
@@ -95,7 +95,7 @@ utNode.ptth = function (req/*as:Object*/, nam/*as:string*/)/*as:boolean*/ {
 		}
 		if (o && o.host && o.port) {
 			c.removeAllListeners("data");
-			s = this.net.createConnection(o.port, o.host);
+			s = net.createConnection(o.port, o.host);
 
 			pbuf = LZR.bind(this, function(d) {
 				this.pckBuffer(d, this.stres, c);
