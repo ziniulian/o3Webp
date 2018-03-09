@@ -98,17 +98,7 @@ utNode.ptth = function (req/*as:Object*/)/*as:boolean*/ {
 			s = net.createConnection(o.port, o.host);
 
 			pbuf = LZR.bind(this, function(d) {
-				if (o.buf) {
-					if (o.goon) {
-						c.write(d);
-					} else {
-						this.pckBuffer(d, stres, c);
-						o.goon = true;
-					}
-				} else {
-					this.pckBuffer(d, stres, c);
-				}
-				// this.pckBuffer(d, this.stres, c);
+				this.pckBuffer(d, stres, c);
 console.log(o.host + ":" + o.port + " <<---- " + d.length);
 			});
 			ubuf = LZR.bind(this, function(d) {
