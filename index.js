@@ -16,6 +16,120 @@ LZR.load([
 var dmsrv = {ds: {main: LZR.HTML.domain}};
 var utNode = LZR.getSingleton(LZR.Node.Util);
 
+// 数据解包
+utNode.unpckBuffer = function (d/*as:Object*/, st/*as:Object*/, tag/*as:Object*/) {
+	for (var i = 0; i < d.length; i ++) {
+		switch (d[i]) {
+			case 0x0d:		// \r
+				if (st.ts === null) {
+					if (st.t === 0 || st.t === 2) {
+						st.t ++;
+					} else {
+						st.t = 0;
+					}
+				}
+				break;
+			case 0x0a:		// \n
+				if (st.ts === null) {
+					if (st.t === 1 || st.t === 3) {
+						st.t ++;
+					} else {
+						st.t = 0;
+					}
+				}
+				break;
+			case 0x7B:		// {
+				if (st.ts === null) {
+					if (st.t === 4) {
+						st.ts = "{";
+						st.t = 1;
+					} else {
+						st.t = 0;
+					}
+				} else {
+					st.t ++;
+					st.ts += "{";
+				}
+				break;
+			case 0x7D:		// }
+				if (st.ts) {
+					st.t --;
+					st.ts += "}";
+					if (st.t === 0) {
+// console.log("unpck : " + st.ts.length);
+						var tt = new this.buf (JSON.parse(st.ts).data);
+						tag.write(tt);
+						st.ts = null;
+					}
+				}
+				break;
+			default:
+				if (st.ts === null) {
+					st.t = 0;
+				} else {
+					st.ts += String.fromCharCode(d[i]);
+				}
+				break;
+		}
+	}
+};
+
+// 数据封包
+utNode.pckBuffer = function (d/*as:Object*/, salt/*as:Object*/, tag/*as:Object*/) {
+	var t = JSON.stringify(d);
+// console.log("pck : " + t.length);
+	tag.write(new this.buf(salt + (t.length) + "\r\n\r\n" + t));
+};
+
+// 逆 HTTP
+utNode.ptth = function (req/*as:Object*/, nam/*as:string*/)/*as:boolean*/ {
+	if (req.body.dat) {
+		var c = req.socket;
+		var st = { t: 0, ts: null };
+		var s, o, pbuf, ubuf;
+		try {
+			o = JSON.parse(req.body.dat);
+			o.host = decodeURIComponent(o.host);
+		} catch (e) {
+			return false;
+		}
+		if (o && o.host && o.port) {
+			c.removeAllListeners("data");
+			s = this.net.createConnection(o.port, o.host);
+
+			pbuf = LZR.bind(this, function(d) {
+				this.pckBuffer(d, this.stres, c);
+// console.log(o.host + ":" + o.port + " <<---- " + d.length);
+			});
+			ubuf = LZR.bind(this, function(d) {
+				this.unpckBuffer(d, st, s);
+// console.log(o.host + ":" + o.port + " >> " + d.length);
+			});
+			s.on("data", pbuf);
+			c.on("data", ubuf);
+			s.on("end", function() {
+				c.end();
+// console.log(o.host + ":" + o.port + " s - end");
+			});
+			c.on("end", function() {
+				s.end();
+// console.log(o.host + ":" + o.port + " c - end");
+			});
+			s.on("error", function () {});
+
+			if (o.buf) {
+				s.write(new this.buf(o.buf.data));
+			} else if (o.rok) {
+				this.pckBuffer(new this.buf(o.rok), this.stres, c);
+			} else {
+				return false;
+			}
+			return true;
+		}
+	}
+	return false;
+};
+
 // 服务的实例化
 var srv = new LZR.Node.Srv ({
 	ip: process.env.OPENSHIFT_NODEJS_IP || "0.0.0.0",
@@ -27,81 +141,10 @@ var stres = "HTTP/1.1 200 OK\r\nAccept-Ranges: bytes";
 // 解析 post 参数
 srv.use("*", bodyParser.urlencoded({ extended: false }));
 
-srv.ro.post("/reLinkDat/", function (req, res) {
-	if (req.body.dat) {
-		var c = req.socket;
-		var s, o;
-		try {
-			if (req.body.dat[0] === "%") {
-				o = JSON.parse(decodeURIComponent(req.body.dat));
-			} else {
-				o = JSON.parse(req.body.dat);
-			}
-		} catch (e) {
-			res.status(404).send("Err");
-		}
-		if (o && o.host && o.port) {
-			c.removeAllListeners("data");
-			s = net.createConnection(o.port, o.host);
-			// c.pipe(s);
-			// s.pipe(c);
-			c.on("data", function(d) {
-				s.write(d);
-console.log(o.host + ":" + o.port + " >> " + d.length);
-			});
-			s.on("data", function(d) {
-				c.write(d);
-console.log(o.host + ":" + o.port + " <<---- " + d.length);
-			});
-			s.on("end", function() {
-				c.end();
-console.log(o.host + ":" + o.port + " s - end");
-			});
-			c.on("end", function() {
-				s.end();
-console.log(o.host + ":" + o.port + " c - end");
-			});
-			s.on("error", function () {});
-			if (o.buf) {
-				s.write(new Buffer(o.buf.data));
-console.log(o.host + ":" + o.port + " >> " + o.buf.data.length);
-			} else if (o.rok) {
-				c.write(new Buffer(o.rok));
-			} else {
-				res.status(404).send("Err");
-			}
-			return true;
-		}
-	}
-	res.status(404).send("Err");
-});
-
 srv.ro.post("/ptth/", function (req, res) {
 	if (!utNode.ptth(req, "net")) {
 		res.redirect(dmsrv.ds.main + "Err");
 	}
-});
-
-srv.ro.post("/testDat/", function (req, res) {
-	if (req.body.dat) {
-		var d, o;
-		if (req.body.dat[0] === "%") {
-			d = decodeURIComponent(req.body.dat);
-		} else {
-			d = req.body.dat;
-		}
-		o = JSON.parse(d);
-		if (o) {
-			if (o.buf) {
-				o.str = new Buffer(o.buf.data).toString();
-			}
-			res.json(o);
-			res.end();
-			return;
-		}
-	}
-	res.send("Err");
-	res.end();
 });
 
 // LOGO图片
