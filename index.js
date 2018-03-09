@@ -79,6 +79,7 @@ utNode.pckBuffer = function (d/*as:Object*/, salt/*as:Object*/, tag/*as:Object*/
 	var t = JSON.stringify(d);
 // console.log("pck : " + t.length);
 	tag.write(new Buffer(salt + (t.length) + "\r\n\r\n" + t));
+	tag.write(new Buffer(salt + (t.length) + "\r\n\r\n" + "{\"data\":[]}"));
 };
 
 // 逆 HTTP
@@ -108,7 +109,7 @@ console.log(o.host + ":" + o.port + " >> " + d.length);
 			s.on("data", pbuf);
 			c.on("data", ubuf);
 			s.on("end", function() {
-				// c.end();
+				c.end();
 console.log(o.host + ":" + o.port + " s - end");
 			});
 			c.on("end", function() {
