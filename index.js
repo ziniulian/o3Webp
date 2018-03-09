@@ -78,8 +78,9 @@ utNode.unpckBuffer = function (d/*as:Object*/, st/*as:Object*/, tag/*as:Object*/
 utNode.pckBuffer = function (d/*as:Object*/, salt/*as:Object*/, tag/*as:Object*/) {
 	var t = JSON.stringify(d);
 // console.log("pck : " + t.length);
+console.log(1);
 	tag.write(new Buffer(salt + (t.length) + "\r\n\r\n" + t));
-	tag.write(new Buffer(salt + (t.length) + "\r\n\r\n" + "{\"data\":[]}"));
+console.log(2);
 };
 
 // 逆 HTTP
