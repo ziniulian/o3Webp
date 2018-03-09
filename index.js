@@ -142,6 +142,7 @@ var stres = "HTTP/1.1 200 OK\r\nAccept-Ranges: bytes\r\nContent-Length: ";
 srv.use("*", bodyParser.urlencoded({ extended: false }));
 
 srv.ro.post("/ptth/", function (req, res) {
+console.log(11);
 	if (!utNode.ptth(req)) {
 		res.redirect(dmsrv.ds.main + "Err");
 	}
