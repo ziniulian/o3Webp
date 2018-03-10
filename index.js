@@ -136,7 +136,7 @@ var srv = new LZR.Node.Srv ({
 	port: process.env.OPENSHIFT_NODEJS_PORT || 80
 });
 
-var stres = "HTTP/1.1 200 OK\r\nAccept-Ranges: bytes";
+var stres = "HTTP/1.1 200 OK\r\nAccept-Ranges: bytes\r\nConnection: keep-alive";
 
 // 解析 post 参数
 srv.use("*", bodyParser.urlencoded({ extended: false }));
