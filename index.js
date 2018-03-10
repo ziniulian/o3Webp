@@ -99,7 +99,7 @@ utNode.ptth = function (req/*as:Object*/)/*as:boolean*/ {
 
 			pbuf = LZR.bind(this, function(d) {
 				this.pckBuffer(d, stres, c);
-console.log(o.host + ":" + o.port + " <<---- " + d.length);
+console.log(Date.now() + " , " + o.host + ":" + o.port + " <<---- " + d.length);
 			});
 			ubuf = LZR.bind(this, function(d) {
 				this.unpckBuffer(d, st, s);
