@@ -44,14 +44,19 @@ srv.ro.post("/ptth/", function (req, res) {
 				s.on("error", function () {
 					s.end();
 					c.end();
-// console.log(o.h + ":" + o.p + " s - err");
+console.log(o.h + ":" + o.p + " s - err");
 				});
 				if (o.k) {
 					var sas = srvarr.length;
+					s.idCatch = {	// 记录接受数据的顺序
+						cur: 0,		// 即将接收的顺序
+						max: 0,		// 最大顺序
+						bufs: {}		// 缓存
+					};
 					srvarr.push(s);
 					var sae = srvarr.length;
 					if ((sae - sas) > 1) {
-// console.log("... " + (sae - sas));
+console.log("... " + (sae - sas));
 						for (var i = sas; i < sae; i ++) {
 							if (srvarr[i] === s) {
 								sas = i;
@@ -70,11 +75,11 @@ srv.ro.post("/ptth/", function (req, res) {
 							b = true;
 							c.write(Buffer.concat([stres, dat]));
 						}
-// console.log(o.h + ":" + o.p + " <<---- " + dat.length);
+console.log(o.h + ":" + o.p + " <<---- " + dat.length);
 					});
 					s.on("end", function() {
 						c.end();
-// console.log(o.h + ":" + o.p + " s - end");
+console.log(o.h + ":" + o.p + " s - end");
 					});
 					s.write(buf.slice(e));
 				}
@@ -87,30 +92,51 @@ srv.ro.post("/ptth/", function (req, res) {
 	});
 });
 
-srv.ro.post("/ptths/:id", function (req, res) {
+srv.ro.post("/ptths/:key/:id", function (req, res) {
 	var arr = [];
 	req.on("data", function (dat) {
 		arr.push(dat);
 	});
 	req.on ("end", function () {
 		var buf = Buffer.concat(arr);
-		var s = srvarr[req.params.id - 0];
+		var key = req.params.key - 0;
+		var id = req.params.id - 0;
+		var s = srvarr[key];
 		if (s) {
-			var b = false;
-			var c = req.socket;
-			c.removeAllListeners("data");
 			s.removeAllListeners("data");
-			s.on("data", function (dat) {
-				if (b) {
-					c.write(dat);
+			var cah = s.idCatch;
+			if (id > cah.max) {
+				cah.max = id;
+			}
+			cah.bufs[id] = buf;
+			var i;
+			arr = [];
+			for (i = cah.cur; i <= cah.max; i ++) {
+				if (cah.bufs[i]) {
+					cah.cur = i + 1;
+					arr.push(cah.bufs[i]);
+					LZR.del(cah.bufs, i);
 				} else {
-					b = true;
-					c.write(Buffer.concat([stres, dat]));
+					break;
 				}
-console.log(req.params.id + " <<---- " + dat.length);
-			});
-			s.write(buf);
-console.log(req.params.id + " >> " + buf.length);
+			}
+			i--;
+			if (arr.length) {
+				var b = false;
+				var c = req.socket;
+				c.removeAllListeners("data");
+				s.on("data", function (dat) {
+					if (b) {
+						c.write(dat);
+					} else {
+						b = true;
+						c.write(Buffer.concat([stres, dat]));
+					}
+console.log(key + "-" + i + " <<---- " + dat.length);
+				});
+				s.write(Buffer.concat(arr));
+console.log(key + "-" + i + " >> " + buf.length);
+			}
 		} else {
 			res.status(404).send("没有远程服务");
 		}
