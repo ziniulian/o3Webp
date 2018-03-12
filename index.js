@@ -44,7 +44,7 @@ srv.ro.post("/ptth/", function (req, res) {
 				s.on("error", function () {
 					s.end();
 					c.end();
-console.log(o.h + ":" + o.p + " s - err");
+// console.log(o.h + ":" + o.p + " s - err");
 				});
 				if (o.k) {
 					var sas = srvarr.length;
@@ -56,7 +56,7 @@ console.log(o.h + ":" + o.p + " s - err");
 					srvarr.push(s);
 					var sae = srvarr.length;
 					if ((sae - sas) > 1) {
-console.log("... " + (sae - sas));
+// console.log("... " + (sae - sas));
 						for (var i = sas; i < sae; i ++) {
 							if (srvarr[i] === s) {
 								sas = i;
@@ -75,11 +75,11 @@ console.log("... " + (sae - sas));
 							b = true;
 							c.write(Buffer.concat([stres, dat]));
 						}
-console.log(o.h + ":" + o.p + " <<---- " + dat.length);
+// console.log(o.h + ":" + o.p + " <<---- " + dat.length);
 					});
 					s.on("end", function() {
 						c.end();
-console.log(o.h + ":" + o.p + " s - end");
+// console.log(o.h + ":" + o.p + " s - end");
 					});
 					s.write(buf.slice(e));
 				}
@@ -132,10 +132,10 @@ srv.ro.post("/ptths/:key/:id", function (req, res) {
 						b = true;
 						c.write(Buffer.concat([stres, dat]));
 					}
-console.log(key + "-" + i + " <<---- " + dat.length);
+// console.log(key + "-" + i + " <<---- " + dat.length);
 				});
 				s.write(Buffer.concat(arr));
-console.log(key + "-" + i + " >> " + buf.length);
+// console.log(key + "-" + i + " >> " + buf.length);
 			}
 		} else {
 			res.status(404).send("没有远程服务");
