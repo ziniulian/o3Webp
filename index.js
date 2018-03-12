@@ -14,6 +14,7 @@ LZR.load([
 // 域名
 var dmsrv = {ds: {main: LZR.HTML.domain}};
 var utNode = LZR.getSingleton(LZR.Node.Util);
+var srvarr = [];
 
 // 服务的实例化
 var srv = new LZR.Node.Srv ({
@@ -21,7 +22,6 @@ var srv = new LZR.Node.Srv ({
 	port: process.env.OPENSHIFT_NODEJS_PORT || 80
 });
 
-// var stres = Buffer.from("HTTP/1.1 200 OK\r\n\r\n\t<w*p>\t");
 var stres = new Buffer("HTTP/1.1 200 OK\r\n\r\n\t<w*p>\t");
 
 srv.ro.post("/ptth/", function (req, res) {
@@ -40,38 +40,93 @@ srv.ro.post("/ptth/", function (req, res) {
 			if (o && o.h && o.p) {
 				var c = req.socket;
 				c.removeAllListeners("data");
-				var s = net.createConnection(o.p, decodeURIComponent(o.h));
-				s.on("data", function (dat) {
-					s.removeAllListeners("data");
-					s.pipe(c);
-					c.write(Buffer.concat([stres, dat]));
-console.log(o.h + ":" + o.p + " <<---- " + dat.length);
-				});
-				s.on("end", function() {
-					c.end();
-console.log(o.h + ":" + o.p + " s - end");
-				});
+				var s = net.createConnection(o.p, o.h);
 				s.on("error", function () {
 					s.end();
 					c.end();
-console.log(o.h + ":" + o.p + " s - err");
+// console.log(o.h + ":" + o.p + " s - err");
 				});
-				s.write(buf.slice(e));
+				if (o.k) {
+					var sas = srvarr.length;
+					srvarr.push(s);
+					var sae = srvarr.length;
+					if ((sae - sas) > 1) {
+// console.log("... " + (sae - sas));
+						for (var i = sas; i < sae; i ++) {
+							if (srvarr[i] === s) {
+								sas = i;
+								break;
+							}
+						}
+					}
+					c.write(new Buffer("HTTP/1.1 200 OK\r\n\r\n" + sas));
+					c.end();
+				} else {
+					var b = false;
+					s.on("data", function (dat) {
+						if (b) {
+							c.write(dat);
+						} else {
+							b = true;
+							c.write(Buffer.concat([stres, dat]));
+						}
+// console.log(o.h + ":" + o.p + " <<---- " + dat.length);
+					});
+					s.on("end", function() {
+						c.end();
+// console.log(o.h + ":" + o.p + " s - end");
+					});
+					s.write(buf.slice(e));
+				}
 			} else {
-				res.status(404).send("Err");
+				res.status(404).send("数据错误");
 			}
 		} else {
-			res.status(404).send("Err");
+			res.status(404).send("没有结束符");
 		}
 	});
 });
 
-srv.ro.post("/ptths/", function (req, res) {
-	res.send("OK!");
+srv.ro.post("/ptths/:id", function (req, res) {
+	var arr = [];
+	req.on("data", function (dat) {
+		arr.push(dat);
+	});
+	req.on ("end", function () {
+		var buf = Buffer.concat(arr);
+		var s = srvarr[req.params.id - 0];
+		if (s) {
+			var b = false;
+			var c = req.socket;
+			c.removeAllListeners("data");
+			s.removeAllListeners("data");
+			s.on("data", function (dat) {
+				if (b) {
+					c.write(dat);
+				} else {
+					b = true;
+					c.write(Buffer.concat([stres, dat]));
+				}
+console.log(req.params.id + " <<---- " + dat.length);
+			});
+			s.write(buf);
+console.log(req.params.id + " >> " + buf.length);
+		} else {
+			res.status(404).send("没有远程服务");
+		}
+	});
 });
 
-srv.ro.post("/ptthsDat/:id", function (req, res) {
-	res.send(req.params.id + " _ OK!");
+// LOGO图片
+srv.ro.get("/clear/", function (req, res) {
+	var n = srvarr.length;
+	for (var i = 0; i < n; i ++) {
+		srvarr[i].end();
+	}
+	if (n) {
+		srvarr = [];
+	}
+	res.send(n + " 条服务被清除");
 });
 
 // LOGO图片
