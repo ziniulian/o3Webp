@@ -4,8 +4,7 @@
 	"main": "index.js",
 	"dependencies": {
 		"express": "4.x",
-		"body-parser": "1.17.x",
-		"lzr": "~1.1.4"
+		"lzr": "~1.1.6"
 	},
 	"devDependencies": {},
 	"scripts": {
