@@ -12,8 +12,8 @@ LZR.load([
 var dmsrv = {ds: {main: LZR.HTML.domain}};
 
 // 代理功能
-// var po = new LZR.Node.Srv.O3srvPoxSrv();
-var po = new LZR.Node.Srv.O3srvPoxSrv({showLog: true});
+var po = new LZR.Node.Srv.O3srvPoxSrv();
+// var po = new LZR.Node.Srv.O3srvPoxSrv({showLog: true});
 
 // 服务的实例化
 var srv = new LZR.Node.Srv ({
