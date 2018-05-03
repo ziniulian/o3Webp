@@ -45,6 +45,11 @@ srv.ro.get("/tools.js", function (req, res) {
 	res.redirect(dmsrv.ds.main + "js/tools.js");
 });
 
+// 返回服务名
+srv.ro.get("/myNam/", function (req, res) {
+	res.send("Webp");
+});
+
 // 静态主页设置
 srv.ro.setStaticDir("/", "./web");
 
