@@ -1,0 +1,132 @@
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=1.0" />
+		<meta charset="utf-8">
+	</head>
+
+	<body>
+		<div id="boso"></div>
+	</body>
+
+	<script type="text/javascript">
+		var src = [];	// 原堆
+		var d7 = [];	// 7堆
+		var d4 = [];	// 4堆
+
+		// 重置
+		function reset () {
+			var i, j, p;
+			var a = [];
+			for (i = -52; i < 0; i ++) {
+				a.push(i);
+			}
+			for (i = 0; i < 52; i ++) {
+				p = Math.floor( Math.random() * (52 - i) );
+				src.push(a.splice(p, 1)[0]);
+			}
+			for (i = 0; i < 7; i ++) {
+				d7[i] = [];
+				for (j = 0; j < (7 - i); j ++) {
+					p = src.pop();
+					d7[i].push(p);
+				}
+				j --;
+				d7[i][j] = -d7[i][j];
+			}
+		}
+
+		// 翻
+		function fan (i) {
+			var a, p, n;
+			if (i) {
+				i --;
+				a = d7[i];
+			} else {
+				a = src;
+			}
+			n = a.length - 1;
+			if (n >= 0) {
+				if (a[n] < 0) {
+					a[n] = -a[n];
+				} else {
+					// 挪动
+				}
+				flush();
+			}
+		}
+
+		// 放
+		function push (i) {
+			var a, p, n;
+			if (i) {
+				i --;
+				a = d7[i];
+			} else {
+				a = src;
+			}
+			n = a.length - 1;
+			if (n >= 0 && a[n] > 0) {
+				// ...
+				flush();
+			}
+		}
+
+		// 刷新
+		function flush () {
+			//
+		}
+
+		// 显示
+		function show (n) {
+			if (n < 0) {
+				return "xx";
+			} else {
+				n --;
+				var y = n % 13;
+				var x = (n - y) / 13;
+				var r;
+				switch (x) {
+					case 0:
+						r = "O_";
+						break;
+					case 1:
+						r = "S_";
+						break;
+					case 2:
+						r = "W_";
+						break;
+					case 3:
+						r = "E_";
+						break;
+				}
+				switch (y) {
+					case 1:
+						r += "A";
+						break;
+					case 11:
+						r += "J";
+						break;
+					case 12:
+						r += "Q";
+						break;
+					case 0:
+						r += "K";
+						break;
+					default:
+						r += y;
+						break;
+				}
+				return r;
+			}
+		}
+
+		function init () {
+			reset();
+			// for (var i = 0; i < src.length; i ++) {
+			// 	console.log (show(-src[i]));
+			// }
+		}
+
+		document.body.onload = init;
+	</script>
+</html>
