@@ -50,6 +50,9 @@ srv.ro.get("/myNam/", function (req, res) {
 	res.send("Webp");
 });
 
+// LZR库文件访问服务
+srv.ro.setStaticDir("/myLib/", LZR.curPath);
+
 // 静态主页设置
 srv.ro.setStaticDir("/", "./web");
 
