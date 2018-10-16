@@ -2,10 +2,12 @@ table {
 	width: 100%;
 }
 tr {
-	height: 3rem;
 	text-align: left;
 }
 
+.tzt {
+	height: 2rem;
+}
 .scd {
 	color: red;
     background-color: #FD0;
@@ -16,12 +18,11 @@ tr {
     line-height: 2;
     width: 5rem;
     text-align: center;
-	font-size: 3rem;
 	font-weight: bold;
     border: solid 1px #000;
 }
 .b {
-	font-size: 3rem;
+	font-size: 2rem;
 	font-weight: bold;
 }
 .tdw {
@@ -30,9 +31,9 @@ tr {
 }
 .ok {
     margin: 1rem;
-    line-height: 2;
+    line-height: 1.5;
     text-align: center;
-	font-size: 3.5rem;
+	font-size: 2rem;
 	font-weight: bold;
     border: solid 1px #000;
 }

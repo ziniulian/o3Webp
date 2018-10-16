@@ -1,12 +1,12 @@
 ﻿function init () {
-	dat.reset();
+	lzr_tools.trace();
 }
 
 var dat = {
 	x: 0,
 	y: 0,
     z: 0,
-	p: 20,		// 利润
+	p: 10,		// 利润
 	n: 0,
 	tim: 0,		// 投注次数
 	t: [],		// 投注集合。	true: 表示相同；		false：表示不同
@@ -37,6 +37,7 @@ var dat = {
         var r = dat.r[y];
         if (!r) {
             r = document.createElement("tr");
+			r.className = "tzt";
             for (var d, i = 0; i <= x; i ++) {
                 d = document.createElement("td");
                 d.onclick = LZR.bind(d, dat.setT, i, y);
