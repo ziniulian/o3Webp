@@ -16,36 +16,57 @@
 	<body>
 		<div id="boso">
 			<div class="logo">
-				<a name="dmad_io_home" class="logohome" href="javascript: dat.reset();"></a>
+				<span>&nbsp;&nbsp;</span>
+				<span class="b" id="timDoe"></span>
+				<span class="b">/</span>
+				<font color="red" class="b" id="limDoe"></font>
+				<span class="b">&nbsp; : &nbsp;</span>
+				<span class="b" id="zDoe"></span>
+				<span class="b">/</span>
+				<span class="b" id="maxDoe"></span>
+				<a name="dmad_io_home" class="logohome"></a>
 			</div>
-			<div class="ok Lc_noselect" onclick="dat.clear();">OK</div>
-			<table>
-				<tbody>
-					<tr>
-						<td id="vDoe" class="tdw b"></td>
-						<td id="pDoe" class="b"></td>
-					</tr>
-					<tr>
-						<td class="tdw">安全次数：</td>
-						<td id="stDoe"></td>
-					</tr>
-					<tr>
-						<td class="tdw">投注次数：</td>
-						<td id="ztDoe"></td>
-					</tr>
-					<tr>
-						<td class="tdw">理论概率：</td>
-						<td id="ttDoe"></td>
-					</tr>
-					<tr>
-						<td class="tdw">预备金：</td>
-						<td id="ptDoe"></td>
-					</tr>
-				</tbody>
-			</table>
-			<div id="tsDoe" border="1"></div>
+			<div class="ok Lc_noselect" onclick="dat.ok();">OK</div>
+			<div class="out">
+				<span class="b" id="vDoe">犟</span>
+				<span class="b"> : </span>
+				<span class="b" id="p1Doe"></span>
+			</div>
 			<br />
-			<table id="tbDoe" border="1"></table>
+			<div class="out">
+				<span class="b">零</span>
+				<span class="b"> : </span>
+				<span class="b" id="p0Doe"></span>
+			</div>
+			<div class="ok Lc_noselect" onclick="dat.no();">NO</div>
+			<hr />
+			<div class="ok Lc_noselect" onclick="dat.oo();">0</div>
+			<div class="out2">
+				<div id="txtDoe3" class="btn Lc_noselect" onclick="dat.setTxt(3);">大</div>
+				<div id="txtDoe1" class="btn Lc_noselect" onclick="dat.setTxt(1);"><font color="red">红</font></div>
+				<div id="txtDoe5" class="btn Lc_noselect" onclick="dat.setTxt(5);">单</div>
+				<div id="txtDoe4" class="btn Lc_noselect" onclick="dat.setTxt(4);">小</div>
+				<div id="txtDoe2" class="btn Lc_noselect" onclick="dat.setTxt(2);">黑</div>
+				<div id="txtDoe6" class="btn Lc_noselect" onclick="dat.setTxt(6);">双</div>
+			</div>
+			<hr />
+			<div class="out3 b">
+				<span class="toL">&nbsp;&nbsp;路纸</span>
+				<a href="javascript: dat.crtLu();">新建&nbsp;&nbsp;</a>
+			</div>
+			<div id="luDoe"></div>
+			<hr />
+			<div>保6 ： <span  id="b6Deo"></span></div>
+			<div>保7 ： <span  id="b7Deo"></span></div>
+			<div>保8 ： <span  id="b8Deo"></span></div>
+			<div>保9 ： <span  id="b9Deo"></span></div>
+			<div>保10 ： <span  id="b10Deo"></span></div>
+			<br />
+			<div>破6 ： <span  id="p6Deo"></span></div>
+			<div>破7 ： <span  id="p7Deo"></span></div>
+			<div>破8 ： <span  id="p8Deo"></span></div>
+			<div>破9 ： <span  id="p9Deo"></span></div>
+			<div>破10 ： <span  id="p10Deo"></span></div>
 		</div>
 	</body>
 

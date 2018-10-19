@@ -3,164 +3,361 @@
 }
 
 var dat = {
-	x: 0,
-	y: 0,
-    z: 0,
-	p: 10,		// 利润
-	n: 0,
-	tim: 0,		// 投注次数
-	t: [],		// 投注集合。	true: 表示相同；		false：表示不同
-    r: [],		// tr元素集合
-
-	reset: function () {
-		tbDoe.innerHTML = "";
-    	tsDoe.innerHTML = "";
-        dat.x = -1;
-        dat.y = 0;
-        dat.z = -1;
-		dat.n = 0;
-		dat.tim = 0;
-        dat.t = [];
-        dat.r = [];
-        dat.addR(0, 0);
-        dat.addR(0, 1);
-		vDoe.innerHTML = "";
-		pDoe.innerHTML = "";
-		stDoe.innerHTML = 0;
-		ztDoe.innerHTML = 0;
-		ttDoe.innerHTML = 0;
-		ptDoe.innerHTML = 0;
-	},
+	tim: 0,		// 次数
+	lu: {t:0},		// 路线集合
+	c: null,	// 当前路线
+	v: false,	// 当前值
+	z: -1,		// 当前位置。	-2:为反，不投注; -1:为反，使用p[0]投注; 其它对应路线的策略。
+	max: 7,		// 最大值
+	txtn: 0,	// 译码
+	txts: ["红", "黑", "大", "小", "单", "双"],	// 译文
+	p: [		// 注额（2-9-4328）
+		[1, 3],
+		[1, 9],
+		[2, 22],
+		[3, 49],
+		[6, 106],
+		[13, 227],
+		[27, 483],
+		[57, 1025],
+		[121, 2173]
+	],
+	po: [],		// 破局数
+	bo: [],		// 保局数
 
     // 添加行
-    addR: function (x, y) {
-        var r = dat.r[y];
+    addR: function (o, y) {
+        var r = o.r[y];
         if (!r) {
             r = document.createElement("tr");
-			r.className = "tzt";
-            for (var d, i = 0; i <= x; i ++) {
+            for (var d, i = 0; i <= o.x + 1; i ++) {
                 d = document.createElement("td");
-                d.onclick = LZR.bind(d, dat.setT, i, y);
+                d.onclick = LZR.bind(d, dat.setT, o, i, y);
                 r.appendChild(d);
             }
-            tbDoe.appendChild(r);
+	        o.r[y] = r;
+            o.t.appendChild(r);
         }
-        dat.r[y] = r;
         return r;
-    },
+	},
 
     // 添加列
-    addD: function (x, y) {
-        var d, dd;
-        for (var i = 0; i < dat.r.length; i ++) {
+    addD: function (o, x, y) {
+        var d;
+        for (var i = 0; i < o.r.length; i ++) {
             d = document.createElement("td");
-            d.onclick = LZR.bind(d, dat.setT, x, i);
-            if (i === 0) {
-                dd = dat.r[i].lastChild;
-            }
-            dat.r[i].appendChild(d);
+            d.onclick = LZR.bind(d, dat.setT, o, x, i);
+            o.r[i].appendChild(d);
         }
-        return dd;
     },
 
     // 获取对应坐标的单元格
-    getD: function (x, y) {
-        var r = dat.r[y];
-        if (r) {
-            return r.childNodes[x];
-        } else {
-            return null;
-        }
+    getD: function (o, x, y) {
+        return o.r[y].childNodes[x];
     },
 
     // 设置单元格
-    setT: function (x, y) {
-        var d;
-        if ((x === dat.x) && (y === (dat.y + 1))) {
-            dat.x = x;
-            dat.y = y;
-            dat.addT(false);
-            dat.addR(x + 1, y + 1);
-            d = dat.getD(x, y);
-            if (d) {
-                d.className = "scd";
-            }
-        } else if ((y === 0) && (x === (dat.x + 1))) {
-            dat.x = x;
-            dat.y = y;
-            dat.addT(true);
-            d = dat.addD(x + 1, y);
-            if (d) {
-                d.className = "scd";
-            }
-        }
-    },
+    setT: function (o, x, y) {
+		if (o.stu === 2) {
+			if ((x === o.x) && (y === (o.y + 1))) {
+				o.y = y;
+				o.v.push (false);
+				dat.addR(o, y + 1);
+				dat.getD(o, x, y).className = "scd";
+			} else if ((y === 0) && (x === (o.x + 1))) {
+				o.x = x;
+				o.y = 0;
+				o.v.push (true);
+				dat.addD(o, x + 1, y);
+				dat.getD(o, x, y).className = "scd";
+			}
+		}
+	},
 
-    // 添加投注值
-    addT: function (v) {
-        var d = document.createElement("div");
-		var p = Math.pow(2, dat.n);
-        d.className = "t Lc_noselect";
-        d.onclick = dat.scdT;
-        d.innerHTML = (v ? "同" : "反");
-		dat.n ++;
-        dat.t.push({
-            v: v,
-			p: (Math.pow(2, dat.n) - 1) * dat.p,
-            doe: d
-        });
-        tsDoe.appendChild(d);
-		dat.flush(true);
-    },
+	// 创建路线
+	crtLu: function () {
+		// 路线对象
+		var o = {
+			id: "L" + dat.lu.t,
+			limit: 0,	// 次数界限
+			tim: 0,		// 创建时间，每次保存会更新此时间
+			stu: 2,		// 状态。	0:停用; 1:启用;	2:修改中
+			x: 0,
+			y: 0,
+			v: [true],		// 路线。	true:表示相同;	false:表示不同
+			r: [],			// tr集合
+			t: document.createElement("table"),	// 表格
+			doe: document.createElement("div"),	// 容器
+			savBtn: document.createElement("div"),	// 保存按钮
+			runBtn: document.createElement("div"),	// 启用按钮
+			disBtn: document.createElement("div"),	// 停用按钮
+			modBtn: document.createElement("div"),	// 修改按钮
+			delBtn: document.createElement("div")	// 删除按钮
+		};
 
-	// 投注
-    scdT: function () {
-		var d = tsDoe.childNodes[dat.z + 1];
-		if (this == d) {
-			d.className = "t Lc_noselect scd";
-			dat.z ++;
+		o.t.border = 1;
+		o.doe.className = "out3";
+		o.savBtn.innerHTML = "保存";
+		o.savBtn.onclick = LZR.bind(o, dat.savLu, o);
+		o.runBtn.innerHTML = "启用";
+		o.runBtn.onclick = LZR.bind(o, dat.runLu, o);
+		o.disBtn.innerHTML = "<font color='red'>停用</font>";
+		o.disBtn.onclick = LZR.bind(o, dat.disLu, o);
+		o.modBtn.innerHTML = "修改";
+		o.modBtn.onclick = LZR.bind(o, dat.modLu, o);
+		o.delBtn.innerHTML = "删除";
+		o.delBtn.onclick = LZR.bind(o, dat.delLu, o);
+		o.doe.appendChild(o.t);
+		o.doe.appendChild(o.delBtn);
+		o.doe.appendChild(o.modBtn);
+		o.doe.appendChild(o.runBtn);
+		o.doe.appendChild(o.disBtn);
+		o.doe.appendChild(o.savBtn);
+
+		dat.addR(o, 0);
+		dat.addR(o, 1);
+		dat.getD(o, 0, 0).className = "scd";
+		dat.modLu(o);
+
+		dat.lu[o.id] = o;
+		dat.lu.t ++;
+		luDoe.insertBefore(o.doe, luDoe.childNodes[0]);
+	},
+
+	// 启用路线，只有停用后，才可进行修改或删除
+	runLu: function (o) {
+		if (!dat.c) {
+			dat.c = o;
+			dat.z = -1;
+			dat.v = false;
+			o.stu = 1;
+			o.disBtn.className = "btnLu Lc_noselect";
+			o.savBtn.className = "Lc_nosee";
+			o.runBtn.className = "Lc_nosee";
+			o.modBtn.className = "Lc_nosee";
+			o.delBtn.className = "Lc_nosee";
 			dat.flush();
 		}
-    },
+	},
 
-	// 清空
-    clear: function () {
-		var o;
-        for (var i in dat.t) {
-			o = dat.t[i];
-            o.doe.className = "t Lc_noselect";
-        }
+	// 停用路线
+	disLu: function (o) {
+		dat.c = null;
 		dat.z = -1;
+		dat.v = false;
+		dat.disLucss(o);
 		dat.flush();
-    },
+	},
 
-	// 刷新计划
-	flush: function (notAdd) {
-		var n;
-		if (!notAdd) {
-			n = ttDoe.innerHTML - 0;
+	// 线路停用时样式
+	disLucss: function (o) {
+		o.stu = 0;
+		o.delBtn.className = "btnLu Lc_noselect";
+		o.modBtn.className = "btnLu Lc_noselect";
+		o.runBtn.className = "btnLu Lc_noselect";
+		o.savBtn.className = "Lc_nosee";
+		o.disBtn.className = "Lc_nosee";
+	},
+
+	// 修改路线
+	modLu: function (o) {
+		o.stu = 2;
+		o.savBtn.className = "btnLu Lc_noselect";
+		o.runBtn.className = "Lc_nosee";
+		o.disBtn.className = "Lc_nosee";
+		o.modBtn.className = "Lc_nosee";
+		o.delBtn.className = "Lc_nosee";
+	},
+
+	// 保存路线
+	savLu: function (o) {
+		o.tim = dat.tim;
+		o.limit = Math.floor(Math.pow(2, o.v.length) * 0.4);
+		if (o.limit > 50) {
+			o.limit = 50;
+		}
+		dat.disLucss(o);
+	},
+
+	// 删除路线
+	delLu: function (o) {
+		luDoe.removeChild(o.doe);
+		LZR.del(dat.lu, o.id);
+	},
+
+	// 刷新页面
+	flush: function () {
+		timDoe.innerHTML = dat.tim;
+		zDoe.innerHTML = dat.z + 1;
+		vDoe.innerHTML = dat.getTxt();
+		if (dat.c) {
+			limDoe.innerHTML = dat.c.tim + dat.c.limit - dat.tim;
+			maxDoe.innerHTML = (dat.max > dat.c.v.length) ? dat.c.v.length : dat.max;
+		} else {
+			limDoe.innerHTML = 0;
+			maxDoe.innerHTML = 0;
+		}
+		if (dat.checkLimit()) {
+			switch (dat.z) {
+				case -2:
+					p0Doe.innerHTML = 0;
+					p1Doe.innerHTML = 0;
+					break;
+				case -1:
+					p0Doe.innerHTML = dat.p[0][0];
+					p1Doe.innerHTML = dat.p[0][1];
+					break;
+				default:
+					p0Doe.innerHTML = dat.p[dat.z][0];
+					p1Doe.innerHTML = dat.p[dat.z][1];
+			}
+		} else {
+			p0Doe.innerHTML = 0;
+			p1Doe.innerHTML = 0;
+		}
+	},
+
+	// 破局记录
+	savPo: function (z, t) {
+		var a = dat.po[z];
+		if (!a) {
+			a = [];
+			dat.po[z] = a;
+		}
+		a.push(t);
+		document.getElementById("p" + z + "Deo").innerHTML += t + ",";
+	},
+
+	// 保局记录
+	savBo: function (z, t) {
+		var a = dat.bo[z];
+		if (!a) {
+			a = [];
+			dat.bo[z] = a;
+		}
+		a.push(t);
+		document.getElementById("b" + z + "Deo").innerHTML += t + ",";
+	},
+
+	// 设置译文
+	setTxt: function (n) {
+		dat.setTxtScd(dat.txtn, "");
+		if (dat.txtn === n) {
+			dat.txtn = 0;
+		} else {
+			dat.txtn = n;
+			dat.setTxtScd(n, "scd");
+		}
+		dat.flush();
+	},
+
+	// 设置译文的选中样式
+	setTxtScd: function (n, s) {
+		if (n) {
+			document.getElementById("txtDoe" + n).className = "btn Lc_noselect " + s;
+		}
+	},
+
+	// 译文翻转
+	revTxt: function () {
+		if (dat.txtn) {
+			dat.setTxtScd(dat.txtn, "");
+			dat.txtn = dat.revTxtn();
+			dat.setTxtScd(dat.txtn, "scd");
+		}
+	},
+
+	// 获取译文的反值
+	revTxtn: function () {
+		var r = dat.txtn;
+		if (dat.txtn) {
+			if (r % 2) {
+				r ++;
+			} else {
+				r --;
+			}
+		}
+		return r;
+	},
+
+	// 获取译文
+	getTxt: function () {
+		var r = "反";
+		if (dat.txtn) {
+			if (dat.v) {
+				r = (dat.txts[dat.txtn - 1]);
+			} else {
+				r = (dat.txts[dat.revTxtn() - 1]);
+			}
+		} else if (dat.v) {
+			r = "同";
+		}
+		return r;
+	},
+
+	// 界限检查
+	checkLimit: function () {
+		return dat.c && (dat.max > dat.z) && (dat.c.v.length > dat.z);
+	},
+
+	// 失败
+	no: function () {
+		if (dat.checkLimit()) {
+			switch (dat.z) {
+				case -2:
+					dat.z = -1;
+					break;
+				default:
+					if (dat.v) {
+						dat.revTxt();
+					}
+					dat.z ++;
+					if (dat.z > 5) {
+						dat.savPo(dat.z, dat.tim);
+					}
+					dat.v = dat.c.v[dat.z];
+					break;
+			}
 			dat.tim ++;
-			ztDoe.innerHTML = dat.tim;
-		} else {
-			n = Math.pow(2, dat.n);
-			ttDoe.innerHTML = n;
-			ptDoe.innerHTML = (n * 2 - dat.n - 2) * dat.p;
+			dat.flush();
 		}
-		n = Math.floor(n * 0.4);
-		if (n > dat.tim) {
-			stDoe.innerHTML = n - dat.tim;
-		} else {
-			stDoe.innerHTML = 0;
-		}
+	},
 
-		var o = dat.t[dat.z + 1];
-		if (o) {
-			vDoe.innerHTML = (o.v ? "同 :" : "反 :");
-			pDoe.innerHTML = o.p;
-		} else {
-			vDoe.innerHTML = "";
-			pDoe.innerHTML = "Game Over!";
+	// 零
+	oo: function () {
+		if (dat.checkLimit()) {
+			dat.z = -2;
+			dat.v = false;
+			dat.tim ++;
+			dat.flush();
+		}
+	},
+
+	// 成功
+	ok: function () {
+		if (dat.checkLimit()) {
+			switch (dat.z) {
+				case -1:
+					dat.revTxt();
+					break;
+				case -2:
+					dat.z = -1;
+					dat.revTxt();
+					break;
+				default:
+					if (dat.z > 4) {
+						dat.savBo(dat.z + 1, dat.tim);
+					}
+					if (dat.v) {
+						dat.z = 0;
+					} else {
+						dat.z = -1;
+						dat.revTxt();
+					}
+					break;
+			}
+			dat.tim ++;
+			dat.flush();
 		}
 	}
-
 };

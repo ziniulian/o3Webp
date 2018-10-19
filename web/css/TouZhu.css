@@ -2,16 +2,9 @@ table {
 	width: 100%;
 }
 tr {
-	text-align: left;
+	height: 3rem;
 }
 
-.tzt {
-	height: 2rem;
-}
-.scd {
-	color: red;
-    background-color: #FD0;
-}
 .t {
     display: inline-block;
     margin: 1rem 0.5rem;
@@ -21,19 +14,69 @@ tr {
 	font-weight: bold;
     border: solid 1px #000;
 }
-.b {
-	font-size: 2rem;
-	font-weight: bold;
-}
 .tdw {
 	width: 10rem;
 	text-align: right;
 }
+
+/***************** 第一块 ******************/
+
+.out {
+	margin-left: 30%;
+}
+.b {
+	font-size: 2.2rem;
+	font-weight: bold;
+}
 .ok {
+	cursor: pointer;
     margin: 1rem;
     line-height: 1.5;
     text-align: center;
-	font-size: 2rem;
+	font-size: 3rem;
 	font-weight: bold;
     border: solid 1px #000;
+}
+
+/***************** 第二块 ******************/
+
+.out2 {
+	text-align: center;
+}
+.btn {
+	cursor: pointer;
+	display: inline-block;
+	width: 25%;
+	margin: 2%;
+	font-size: 2rem;
+	font-weight: bold;
+	line-height: 2;
+    border: solid 1px #000;
+	text-align: center;
+}
+.scd {
+    background-color: #FD0;
+}
+
+/***************** 第三块 ******************/
+
+.out3 {
+	position: relative;
+	text-align: right;
+	line-height: 3;
+}
+.toL {
+	position: absolute;
+	left: 0;
+	top: 0;
+}
+.btnLu {
+	cursor: pointer;
+	display: inline-block;
+	margin: 0 5% 2rem 20%;
+	font-size: 1.8rem;
+	font-weight: bold;
+	line-height: 2;
+	color: blue;
+	text-align: center;
 }
