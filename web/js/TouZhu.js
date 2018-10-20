@@ -7,8 +7,8 @@ var dat = {
 	lu: {t:0},		// 路线集合
 	c: null,	// 当前路线
 	v: false,	// 当前值
-	z: -1,		// 当前位置。	-2:为反，不投注; -1:为反，使用p[0]投注; 其它对应路线的策略。
-	max: 17,		// 最大值
+	z: -1,		// 当前位置。	-2:为同，1元投注; -1:为反，1元投注; 其它对应路线的策略。
+	max: 14,		// 最大值
 	txtn: 0,	// 译码
 	txts: ["红", "黑", "大", "小", "单", "双"],	// 译文
 	p: [		// 注额（2-9-4328）
@@ -18,55 +18,51 @@ var dat = {
 		[6, 99],
 		[12, 215],
 		[26, 461],
+		[55, 982],
 		[1, 6],
 		[1, 18],
 		[3, 44],
 		[6, 99],
 		[12, 215],
 		[26, 461],
-		[1, 6],
-		[1, 18],
-		[3, 44],
-		[6, 99],
-		[12, 215],
-		[26, 461]
+		[55, 982]
 	],
 	po: [],		// 破局数
 	bo: [],		// 保局数
 
-    // 添加行
-    addR: function (o, y) {
-        var r = o.r[y];
-        if (!r) {
-            r = document.createElement("tr");
-            for (var d, i = 0; i <= o.x + 1; i ++) {
-                d = document.createElement("td");
-                d.onclick = LZR.bind(d, dat.setT, o, i, y);
-                r.appendChild(d);
-            }
-	o.r[y] = r;
-	o.t.appendChild(r);
-        }
-        return r;
+	// 添加行
+	addR: function (o, y) {
+		var r = o.r[y];
+		if (!r) {
+			r = document.createElement("tr");
+			for (var d, i = 0; i <= o.x + 1; i ++) {
+				d = document.createElement("td");
+				d.onclick = LZR.bind(d, dat.setT, o, i, y);
+				r.appendChild(d);
+			}
+			o.r[y] = r;
+			o.t.appendChild(r);
+		}
+		return r;
 	},
 
-    // 添加列
-    addD: function (o, x, y) {
-        var d;
-        for (var i = 0; i < o.r.length; i ++) {
-            d = document.createElement("td");
-            d.onclick = LZR.bind(d, dat.setT, o, x, i);
-            o.r[i].appendChild(d);
-        }
-    },
+	// 添加列
+	addD: function (o, x, y) {
+		var d;
+		for (var i = 0; i < o.r.length; i ++) {
+			d = document.createElement("td");
+			d.onclick = LZR.bind(d, dat.setT, o, x, i);
+			o.r[i].appendChild(d);
+		}
+	},
 
-    // 获取对应坐标的单元格
-    getD: function (o, x, y) {
-        return o.r[y].childNodes[x];
-    },
+	// 获取对应坐标的单元格
+	getD: function (o, x, y) {
+		return o.r[y].childNodes[x];
+	},
 
-    // 设置单元格
-    setT: function (o, x, y) {
+	// 设置单元格
+	setT: function (o, x, y) {
 		if (o.stu === 2) {
 			if ((x === o.x) && (y === (o.y + 1))) {
 				o.y = y;
@@ -209,7 +205,7 @@ var dat = {
 		if (dat.checkLimit()) {
 			if (dat.z < 0) {
 				p0Doe.innerHTML = 1;
-				p1Doe.innerHTML = 1;
+				p1Doe.innerHTML = 2;
 			} else {
 				p0Doe.innerHTML = dat.p[dat.z][0];
 				p1Doe.innerHTML = dat.p[dat.z][1];
@@ -317,7 +313,7 @@ var dat = {
 						dat.revTxt();
 					}
 					dat.z ++;
-					if (dat.z > 5) {
+					if (dat.z > 4) {
 						dat.savPo(dat.z, dat.tim);
 					}
 					dat.v = dat.c.v[dat.z];
@@ -350,7 +346,7 @@ var dat = {
 					dat.v = false;
 					break;
 				default:
-					if (dat.z > 4) {
+					if (dat.z > 3) {
 						dat.savBo(dat.z + 1, dat.tim);
 					}
 					if (dat.v) {
