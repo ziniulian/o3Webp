@@ -1,0 +1,72 @@
+<html>
+	<head>
+		<title>犟子工作室——骰宝模拟器</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=1.0" />
+		<meta charset="utf-8">
+		<script type="text/javascript" src="/myLib/LZR.js"></script>
+		<script type="text/javascript" src="js/ShaiBaoMoni.js"></script>
+		<link rel="stylesheet" href="/base.css"/>
+		<link rel="stylesheet" href="css/ShaiBaoMoni.css"/>
+
+		<style type="text/css">
+		</style>
+	</head>
+
+	<body>
+		<div id="boso">
+			<div class="logo">
+				<a href="javascript: dat.crtSv();">重置</a>
+				<a name="dmad_io_home" class="logohome"></a>
+			</div>
+			<div><table>
+				<tr>
+					<td>点</td>
+					<td>单</td>
+					<td>对</td>
+					<td>围</td>
+					<td>最隔</td>
+					<td>最连</td>
+					<td>均隔</td>
+				</tr>
+				<tbody id="ctpDoe"></tbody>
+			</table></div>
+			<br />
+			<div><table>
+				<tr>
+					<td>项目</td>
+					<td>概率</td>
+					<td>最隔</td>
+					<td>最连</td>
+					<td>均隔</td>
+				</tr>
+				<tbody id="ctdDoe"></tbody>
+			</table></div>
+			<br />
+			<div><table>
+				<tr>
+					<td>项目</td>
+					<td>保</td>
+					<td>破</td>
+					<td>最大连保</td>
+					<td>最大连破</td>
+				</tr>
+				<tbody id="poDoe"></tbody>
+			</table></div>
+			<br />
+			<div><table>
+				<tr>
+					<td>项目</td>
+					<td>概率</td>
+					<td>最小间隔</td>
+					<td>最大间隔</td>
+					<td>限制概率</td>
+				</tr>
+				<tbody id="luDoe"></tbody>
+			</table></div>
+		</div>
+	</body>
+
+	<script type="text/javascript">
+		document.body.onload = init;
+	</script>
+</html>

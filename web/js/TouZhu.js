@@ -6,12 +6,13 @@ var dat = {
 	tim: 0,		// 次数
 	lu: {t:0},		// 路线集合
 	c: null,	// 当前路线
-	v: false,	// 当前值
-	z: -1,		// 当前位置。	-2:为同，1元投注; -1:为反，1元投注; 其它对应路线的策略。
-	max: 14,		// 最大值
+	v: true,	// 当前值
+	z: 0,		// 当前位置。	-2:为同，1元投注; -1:为反，1元投注; 其它对应路线的策略。
+	max: 8,		// 最大值
+	maxL: 43,	// 最大限制
 	txtn: 0,	// 译码
 	txts: ["红", "黑", "大", "小", "单", "双"],	// 译文
-	p: [		// 注额（2-9-4328）
+	p: [		// 注额（5-8-4130）
 		[1, 6],
 		[1, 18],
 		[3, 44],
@@ -19,13 +20,7 @@ var dat = {
 		[12, 215],
 		[26, 461],
 		[55, 982],
-		[1, 6],
-		[1, 18],
-		[3, 44],
-		[6, 99],
-		[12, 215],
-		[26, 461],
-		[55, 982]
+		[116, 2085]
 	],
 	po: [],		// 破局数
 	bo: [],		// 保局数
@@ -133,8 +128,8 @@ var dat = {
 	runLu: function (o) {
 		if (!dat.c) {
 			dat.c = o;
-			dat.z = -1;
-			dat.v = false;
+			dat.z = 0;
+			dat.v = true;
 			o.stu = 1;
 			o.disBtn.className = "btnLu Lc_noselect";
 			o.savBtn.className = "Lc_nosee";
@@ -148,8 +143,8 @@ var dat = {
 	// 停用路线
 	disLu: function (o) {
 		dat.c = null;
-		dat.z = -1;
-		dat.v = false;
+		dat.z = 0;
+		dat.v = true;
 		dat.disLucss(o);
 		dat.flush();
 	},
@@ -178,8 +173,8 @@ var dat = {
 	savLu: function (o) {
 		o.tim = dat.tim;
 		o.limit = Math.floor(Math.pow(2, o.v.length) * 0.4);
-		if (o.limit > 43) {
-			o.limit = 43;
+		if (o.limit > dat.maxL) {
+			o.limit = dat.maxL;
 		}
 		dat.disLucss(o);
 	},
@@ -203,12 +198,18 @@ var dat = {
 			maxDoe.innerHTML = 0;
 		}
 		if (dat.checkLimit()) {
-			if (dat.z < 0) {
-				p0Doe.innerHTML = 1;
-				p1Doe.innerHTML = 2;
-			} else {
-				p0Doe.innerHTML = dat.p[dat.z][0];
-				p1Doe.innerHTML = dat.p[dat.z][1];
+			switch (dat.z) {
+				case -2:
+					p0Doe.innerHTML = 0;
+					p1Doe.innerHTML = 0;
+					break;
+				case -1:
+					p0Doe.innerHTML = 1;
+					p1Doe.innerHTML = 2;
+					break;
+				default:
+					p0Doe.innerHTML = dat.p[dat.z][0];
+					p1Doe.innerHTML = dat.p[dat.z][1];
 			}
 		} else {
 			p0Doe.innerHTML = 0;
@@ -304,8 +305,7 @@ var dat = {
 		if (dat.checkLimit()) {
 			switch (dat.z) {
 				case -2:
-					dat.z = -1;
-					dat.v = false;
+					dat.z = 0;
 					dat.revTxt();
 					break;
 				default:
@@ -342,17 +342,15 @@ var dat = {
 					dat.revTxt();
 					break;
 				case -2:
-					dat.z = -1;
-					dat.v = false;
+					dat.z = 0;
 					break;
 				default:
 					if (dat.z > 3) {
 						dat.savBo(dat.z + 1, dat.tim);
 					}
-					if (dat.v) {
-						dat.z = 0;
-					} else {
-						dat.z = -1;
+					dat.z = 0;
+					if (!dat.v) {
+						dat.v = true;
 						dat.revTxt();
 					}
 					break;
