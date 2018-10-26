@@ -1,0 +1,59 @@
+<html>
+	<head>
+		<title>犟子工作室——猜个P</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=1.0" />
+		<meta charset="utf-8">
+		<script type="text/javascript" src="/myLib/LZR.js"></script>
+		<script type="text/javascript" src="/tools.js"></script>
+		<script type="text/javascript" src="js/CaiP.js"></script>
+		<link rel="stylesheet" href="/base.css"/>
+
+		<style type="text/css">
+			tr, .c {
+				text-align: center;
+				font-size: 3rem;
+				line-height: 2;
+			}
+			.b {
+				text-align: center;
+				font-size: 5rem;
+				line-height: 2;
+			}
+			.colrB {
+				color: blue;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="boso">
+			<div class="logo">
+				<span id="monipDoe"></span>
+				<a name="dmad_io_home" class="logohome"></a>
+			</div>
+			<div id="pDoe" class="b">- : -</div><br />
+			<div id="vDoe" class="c colrB">0</div><br />
+			<div><table border="1" class="Lc_noselect">
+				<tr>
+					<td onclick="dat.key(1);">1</td>
+					<td onclick="dat.key(2);">2</td>
+					<td onclick="dat.key(3);">3</td>
+				</tr>
+				<tr>
+					<td onclick="dat.key(4);">4</td>
+					<td onclick="dat.key(5);">5</td>
+					<td onclick="dat.key(6);">6</td>
+				</tr>
+				<tr>
+					<td onclick="dat.clear();">清空</td>
+					<td class="colrB" onclick="dat.sav();">保存</td>
+					<td onclick="dat.run();">确定</td>
+				</tr>
+			</table></div>
+		</div>
+	</body>
+
+	<script type="text/javascript">
+		document.body.onload = init;
+	</script>
+</html>

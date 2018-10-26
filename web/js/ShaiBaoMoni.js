@@ -3,6 +3,7 @@
 	非常稳定的比例 ：
 		各点平均间隔 ： 24.38%
 	*/
+	lzr_tools.trace();
 	dat.crtSv();
 }
 
