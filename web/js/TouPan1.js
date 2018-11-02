@@ -2,26 +2,21 @@
 	lzr_tools.trace();
 	/*
 		测试结果 ： 失败！
+		改良后，结果依旧失败
 	*/
-
-	if (dat.moni.do) {
-		for (var i = 0; i < dat.n; i ++) {
-			dat.sv.push(dat.moni.crtV());
-		}
-		dat.flush();
-	}
 }
 
 var dat = {
 	sv: [],		// 原始数据
-	n: 25,		// 期数
+	c: [],		// 备选数字
+	n: 17,		// 期数
+	win: 0,
+	low: 0,
 
 	moni: {
 		// 模拟
-		do: 10000,
-		// do: 0,
+		do: 0,
 		p: 0,
-		v: [],
 
 		// 生成随机数
 		crtV: function () {
@@ -53,67 +48,90 @@ var dat = {
 				dat.sv.push(v);
 				vDoe.className = "vDoe";
 				vDoe.value = "";
-				dat.flush();
+				dat.calc();
 			}
 		}
 	},
 
-	flush: function () {
-		var i, j, k, d, b, v;
-		k = dat.sv.length;
-		if (k > dat.n) {
-			v = dat.sv[k - 1];
-
+	calc: function () {
+		var i, j, n, v;
+		n = dat.sv.length;
+		if (n >= dat.n) {
+			v = dat.sv[n - 1];
+// alert(v);
 			// 模拟收益计算
 			if (dat.moni.do) {
-				if (dat.moni.v.length) {
-					b = true;
-					for (i = 0; i < dat.moni.v.length; i ++) {
-						if (dat.moni.v[i] === v) {
-							// 赢
-							dat.moni.p += (36 - dat.moni.v.length);
-							b = false;
-							break;
-						}
-					}
-					if (b) {
-						// 输
-						dat.moni.p -= dat.moni.v.length;
-					}
+				if (dat.c[v] === 1) {
+					// 赢
+					dat.moni.p += (dat.n - 1);
+					dat.win ++;
+				} else if (dat.c[v] === -1) {
+					// 输
+					dat.moni.p -= (37 - dat.n);
+					dat.low ++;
 				}
-				monipDoe.innerHTML = dat.moni.p;
-				dat.moni.v = [];
 			}
 
 			// 正式操作
-			k -= dat.n;
-			rDoe.innerHTML = "";
-			for (i = 0; i < 37; i++) {
-				b = true;
-				for (j = k; j < dat.sv.length; j ++) {
-					if (dat.sv[j] === i) {
-						b = false;
-						break;
+			for (i = 0; i < 37; i ++) {
+				dat.c[i] = 1;
+			}
+
+			for (i = (n - dat.n); i < n; i ++) {
+				if (dat.c[dat.sv[i]] === 1) {
+					dat.c[dat.sv[i]] = -1;
+				} else {
+					for (j = 0; j < 37; j ++) {
+						dat.c[j] = 0;
 					}
-				}
-				if (b) {
-					d = document.createElement("div");
-					d.className = "rDoe";
-					d.innerHTML = i;
-					rDoe.appendChild(d);
-					if (dat.moni.do) {
-						dat.moni.v.push(i);
-					}
+					break;
 				}
 			}
+			// dat.flush();
 		}
 
 		// 自动模拟
 		if (dat.moni.do > 0) {
 			dat.sv.push(dat.moni.crtV());
 			dat.moni.do --;
-			setTimeout(dat.flush, 1);
+			// setTimeout(dat.calc, 1);
+			dat.calc();
+		} else {
+			console.log (dat.win + " / " + dat.low + " / " + dat.sv.length + " (" + dat.calPercent((dat.win)/dat.sv.length) + ") , " + dat.moni.p + " | " + (dat.win * (dat.n - 1) - dat.low * (37 - dat.n)) + " ... " + (dat.low * (36 - dat.n) - dat.win * dat.n));
 		}
 	},
+
+	calPercent: function (v) {
+		var s = Math.floor(v * 100000) + "%";
+		while (s.length < 5) {
+			s = "0" + s;
+		}
+		var n = s.length - 4;
+		return s.substring(0, n) + "." + s.substring(n);
+	},
+
+	flush: function () {
+		var i, d;
+		rDoe.innerHTML = "";
+		if (dat.c[0]) {
+			for (i = 0; i < 37; i ++) {
+				if (dat.c[i] === 1) {
+					d = document.createElement("div");
+					d.className = "rDoe";
+					d.innerHTML = i;
+					rDoe.appendChild(d);
+				}
+			}
+		}
+		if (dat.moni.do) {
+			monipDoe.innerHTML = dat.moni.p;
+		}
+	},
+
+	retry: function () {
+		dat.moni.do = 6000;
+		dat.sv.push(dat.moni.crtV());
+		dat.calc();
+	}
 
 };

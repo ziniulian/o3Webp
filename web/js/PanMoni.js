@@ -9,6 +9,7 @@
 	dat.check1(2);
 	dat.check1(3);
 	dat.check1(4);
+	dat.check1(5);
 	dat.check1(6);
 	dat.check1(7);
 	dat.check1(8);
@@ -34,6 +35,7 @@
 	dat.check1(28);
 	dat.check1(29);
 	dat.check1(30);
+	dat.check1(31);
 	dat.check1(32);
 	dat.check1(33);
 	dat.check1(34);
