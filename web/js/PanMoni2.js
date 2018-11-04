@@ -44,6 +44,20 @@ var dat = {
 						dat.c[k] = 1;
 					}
 
+					// 二次补刀策略统计
+					if (k === dat.bu) {
+						v = dat.sv[i + 1];
+						for (j = (j - 1); j >= dat.p; j --) {
+							if (dat.sv[j] === v) {
+								dat.c[0][1].push(i);
+								break;
+							}
+						}
+						if (j < dat.p) {
+							dat.c[0][0].push(i);
+						}
+					}
+
 					dat.p = i;
 					break;
 				}
@@ -90,5 +104,10 @@ var dat = {
 				tbDoe.appendChild(r);
 			}
 		}
+
+		vDoe.innerHTML = "补刀信息 ： " + dat.bu + " - " + dat.calPercent(dat.c[0][1].length/dat.c[0][0].length) + " , " + dat.sv.length;
+
+		// console.log (dat.sv);
+		// console.log(dat.c[0]);
 	}
 };
