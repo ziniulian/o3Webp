@@ -1,4 +1,8 @@
 ﻿function init () {
+	/*
+		测试结果 ： 失败！
+	*/
+	nDoe.value = dat.bu;
 	lzr_tools.trace();
 }
 
@@ -6,8 +10,9 @@ var dat = {
 	n: 1000000,	// 个数
 	p: 0,	// 指针
 	sv: [],		// 原始数据
-	bu: 12,		// 补刀位置
-	c: [[[], []]],		// 结果集
+	bu: 3,		// 补刀位置
+	// c: [[[], []]],		// 结果集
+	c: [[0, 0]],		// 结果集
 
 	// 生成随机数
 	crtV: function () {
@@ -32,7 +37,7 @@ var dat = {
 
 	// 检查无重复号的间隔频率
 	check: function () {
-		var i, j, k, v, a = [];
+		var i, j, k, v;
 		for (i = dat.p; i < dat.sv.length; i ++) {
 			v = dat.sv[i];
 			for (j = (i - 1); j >= dat.p; j --) {
@@ -47,14 +52,16 @@ var dat = {
 					// 二次补刀策略统计
 					if (k === dat.bu) {
 						v = dat.sv[i + 1];
-						for (j = (j - 1); j >= dat.p; j --) {
+						for (j = (i - 1); j >= dat.p; j --) {
 							if (dat.sv[j] === v) {
-								dat.c[0][1].push(i);
+								// dat.c[0][1].push(i);
+								dat.c[0][1] ++;
 								break;
 							}
 						}
 						if (j < dat.p) {
-							dat.c[0][0].push(i);
+							// dat.c[0][0].push(i);
+							dat.c[0][0] ++;
 						}
 					}
 
@@ -105,7 +112,8 @@ var dat = {
 			}
 		}
 
-		vDoe.innerHTML = "补刀信息 ： " + dat.bu + " - " + dat.calPercent(dat.c[0][1].length/dat.c[0][0].length) + " , " + dat.sv.length;
+		// vDoe.innerHTML = "补刀信息 ： " + dat.bu + " _ " + dat.calPercent(dat.c[0][1].length/dat.c[0][0].length) + " , " + dat.sv.length;
+		vDoe.innerHTML = "补刀信息 ： " + dat.bu + " _ " + dat.calPercent(dat.c[0][1]/dat.c[0][0]) + " , " + dat.sv.length;
 
 		// console.log (dat.sv);
 		// console.log(dat.c[0]);
