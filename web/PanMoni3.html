@@ -1,0 +1,49 @@
+<html>
+	<head>
+		<title>犟子工作室——轮盘模拟3</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=1.0" />
+		<meta charset="utf-8">
+		<script type="text/javascript" src="/myLib/LZR.js"></script>
+		<script type="text/javascript" src="/tools.js"></script>
+		<script type="text/javascript" src="js/PanMoni3.js"></script>
+		<link rel="stylesheet" href="/base.css"/>
+
+		<style type="text/css">
+			th {
+				text-align: left;
+			}
+
+			.b {
+				background-color: yellow;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="boso">
+			<div class="logo">
+				<a href="javascript: dat.retry();">ReTry</a>
+				<a name="dmad_io_home" class="logohome"></a>
+			</div>
+			<div id = "vDoe"></div>
+			<br />
+			<table width=100%>
+				<tbody>
+					<tr>
+						<th>个数</th>
+						<th>期数</th>
+						<th>重复数</th>
+						<th>不重复数</th>
+						<th>重复率</th>
+						<th>不重复率</th>
+					</tr>
+				</tbody>
+				<tbody id="tbDoe"></tbody>
+			</table>
+		</div>
+	</body>
+
+	<script type="text/javascript">
+		document.body.onload = init;
+	</script>
+</html>

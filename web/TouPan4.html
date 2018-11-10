@@ -1,0 +1,59 @@
+<html>
+	<head>
+		<title>必输！——自动找路，四次倍投</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=1.0" />
+		<meta charset="utf-8">
+		<script type="text/javascript" src="/myLib/LZR.js"></script>
+		<script type="text/javascript" src="/tools.js"></script>
+		<script type="text/javascript" src="js/TouPan4.js"></script>
+		<link rel="stylesheet" href="/base.css"/>
+
+		<style type="text/css">
+			/*取消输入框的默认样式*/
+			input{
+				text-align: center;
+				border: none;
+				outline: medium;
+			}
+
+			.vDoe {
+				width: 100%;
+				line-height: 2;
+				font-size: 2rem;
+				text-align: center;
+			}
+
+			.rDoe {
+				display: inline-block;
+				text-align: center;
+				font-size: 2rem;
+				width: 6rem;
+				line-height: 3;
+			}
+
+			.c {
+				text-align: center;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="boso">
+			<div class="logo">
+				<a href="javascript: dat.retry();">Retry</a>
+				<span id="monipDoe">0</span>
+				<a name="dmad_io_home" class="logohome"></a>
+			</div>
+			<div>
+				<input id="vDoe" type="number" class="vDoe" placeholder="请输入" onchange="dat.setV(this.value);"/>
+			</div>
+			<div id="pDoe" class="vDoe">0</div>
+			<hr />
+			<div id="rDoe" class="c"></div>
+		</div>
+	</body>
+
+	<script type="text/javascript">
+		document.body.onload = init;
+	</script>
+</html>
