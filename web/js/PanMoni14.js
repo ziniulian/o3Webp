@@ -7,7 +7,7 @@
 }
 
 var dat = {
-	n: 100000,	// 个数
+	n: 1000000,	// 个数
 	w: 25,		// 冷热周期
 	sv: [],		// 原始数据
 	c: [],		// 个数统计
@@ -15,6 +15,7 @@ var dat = {
 	sp: 0,		// 排序用指针
 	zp: null,	// 前一个非零值
 	gp: 0,		// 间隔指针
+	gp2: 0,		// 二次隔指针
 
 	min: 2,
 	max: 7,
@@ -74,7 +75,13 @@ var dat = {
 		// dat.check1(p);
 		// dat.check2(p);
 		// dat.check3(p);
-		dat.check4(p);
+		// dat.check4(p);
+		// dat.check5(p);
+		// dat.check6(p);
+		// dat.check7(p);
+		// dat.check8(p);
+		// dat.check9(p);
+		dat.check10(p);
 	},
 
 	init: function () {
@@ -521,5 +528,176 @@ console.log(dat.r3);
 			r.appendChild(d);
 			tbDoe.appendChild(r);
 		}
+	},
+
+	// 平均间隔
+	check5: function (i) {
+		var v, p, n;
+		// 测试结果： 平均间隔：7.3。故决定只针对间隔 7 以下的情况
+		if (!dat.r5) {
+			dat.r5 = [];
+		}
+		p = 0;
+		n = 0;
+		for (; i < dat.sv.length; i ++) {
+			v = dat.sv[i];
+			if (v[10]) {
+				n ++;
+				p += v[9];
+				dat.r5.push([v[9], (p/n), v[10]]);
+			}
+		}
+console.log (dat.r5);
+console.log(p);
+	},
+
+	// 通过平均倍率计算盈利。经模拟，12 和 14 两个关口亏损最低。
+	check6: function (i) {
+		var v, n = 0;
+		if (!dat.r6) {
+			dat.r6 = [
+				0,
+				[35, 0],		// 1
+				[11.22, 0],	// 1.058823529
+				[5.31, 0],	// 1.155080214
+				[2.97, 0],	// 1.299465241
+				[1.81, 0],	// 1.509056408
+				[1.15, 0],	// 1.81086769
+				[0.76, 0],	// 2.247973684
+				[0.5, 0],	// 2.89025188
+				[0.33, 0],	// 3.853669173
+				[0.22, 0],	// 5.335849624
+				[0.14, 0],	// 7.683623459
+				[0.09, 0],	// 11.52543519
+				[0.05, 0],	// 18.0398116
+				[0.03, 0],	// 29.51969171
+				[0.01, 0],	// 50.60518579
+			];
+		}
+		for (; i < dat.sv.length; i ++) {
+			v = dat.sv[i];
+			if (v[10]) {
+				dat.r6[0] ++;
+			} else if (v[9] < 16) {
+				dat.r6[v[9]][1] ++;
+			}
+		}
+		for (i = 1; i < 16; i ++) {
+			console.log(i + " , " + ((dat.r6[0] - dat.r6[i][1]) * dat.r6[i][0] - dat.r6[i][1]));
+		}
+// console.log (dat.r6);
+	},
+
+	// 精简的间隔统计
+	check7: function (i) {
+		var v;
+		if (!dat.r7) {
+			dat.r7 = [0];
+		}
+		for (; i < dat.sv.length; i ++) {
+			v = dat.sv[i];
+			if (!dat.r7[v[9]]) {
+				dat.r7[v[9]] = [0, 0];
+			}
+			if (v[10]) {
+				dat.r7[0] ++;
+				dat.r7[v[9]][1] ++;
+			} else {
+				dat.r7[v[9]][0] ++;
+			}
+		}
+console.log (dat.r7);
+	},
+
+	// 六隔内的具体分析
+	check8: function (i) {
+		var v, m, n, p, b;
+		m = 0;
+		n = 0;
+		/*
+			最大间隔会有近20次的间距，所以最大数无意义
+			六隔的概率为 45%
+			六隔能连出的概率也为45%，无差别
+			六隔上一次不出接这次出的概率依旧为45%，无差别
+			七隔的概率为 55%
+			七隔不含一的概率为 52.5% （此方式好像比七隔的亏损了略低一点点）
+		*/
+		if (!dat.r8) {
+			dat.r8 = [];
+		}
+		for (; i < dat.sv.length; i ++) {
+			v = dat.sv[i];
+			if (v[10]) {
+				p = dat.r8.length - 1;
+				// if (dat.r8[p] === 1 && dat.r8[p - 1] === 0) {
+				if (dat.r8[p] === 0) {
+					m ++;
+					b = true;
+				} else {
+					b = false;
+				}
+				// if (v[9] > 7 || v[9] === 1) {
+				if (v[9] > 6) {
+					dat.r8.push(0);
+				} else {
+					dat.r8.push(1);
+					if (b) {
+						n ++;
+					}
+				}
+			}
+		}
+console.log (dat.r8);
+console.log (n + " , " + m + " , " + (n/m));
+	},
+
+	// 隔的隔、隔的二次方、二次隔
+	check9: function (i) {
+		var j, k, v, p, o;
+		if (!dat.r9) {
+			dat.r9 = [];
+		}
+		p = dat.r9.length;
+		for (; i < dat.sv.length; i ++) {
+			v = dat.sv[i];
+			if (v[10]) {
+				k = dat.r9.length;
+				o = [v[9], k - p, 0];
+				for (j = k - 1; j >= p; j --) {
+					if (dat.r9[j][0] === o[0]) {
+						o[2] = k - j;
+						p = dat.r9.length;
+						break;
+					}
+				}
+				dat.r9.push(o);
+			}
+		}
+console.log (dat.r9);
+	},
+
+	// 二次隔统计
+	check10: function (p) {
+		var i, v, a = [0];
+		// 此方式不好操作，依旧难以盈利
+		dat.check9(p);
+		for (i = 0; i < dat.r9.length; i ++) {
+			v = dat.r9[i];
+			if (v[1]) {
+				// if (v[0] === 1) {
+					if (!a[v[1]]) {
+						a[v[1]] = [0, 0];
+					}
+					a[0] ++;
+					if (v[2]) {
+						a[v[1]][1] ++;
+					} else {
+						a[v[1]][0] ++;
+					}
+				// }
+			}
+		}
+console.log(a);
 	}
+
 };
