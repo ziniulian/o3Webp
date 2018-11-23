@@ -72,7 +72,7 @@ var dat = {
 		}
 // console.log(dat.sv);
 
-		// dat.check1(p);
+		dat.check1(p);
 		// dat.check2(p);
 		// dat.check3(p);
 		// dat.check4(p);
@@ -81,7 +81,7 @@ var dat = {
 		// dat.check7(p);
 		// dat.check8(p);
 		// dat.check9(p);
-		dat.check10(p);
+		// dat.check10(p);
 	},
 
 	init: function () {

@@ -1,0 +1,50 @@
+<html>
+	<head>
+		<title>信息记录</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=1.0" />
+		<meta charset="utf-8">
+		<script type="text/javascript" src="/myLib/LZR.js"></script>
+		<script type="text/javascript" src="/tools.js"></script>
+		<script type="text/javascript" src="js/JiPan.js"></script>
+		<link rel="stylesheet" href="/base.css"/>
+
+		<style type="text/css">
+			/*取消输入框的默认样式*/
+			input{
+				text-align: center;
+				border: none;
+				outline: medium;
+			}
+
+			.vDoe {
+				width: 100%;
+				line-height: 2;
+				font-size: 2rem;
+			}
+
+			.rDoe {
+				display: inline-block;
+				text-align: center;
+				font-size: 2rem;
+				width: 6rem;
+				line-height: 3;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="boso">
+			<div class="logo">
+				<a name="dmad_io_home" class="logohome"></a>
+			</div>
+			<div>
+				<input id="vDoe" type="number" class="vDoe" placeholder="请输入" onchange="dat.setV(this.value);"/>
+			</div>
+			<div id="rDoe"></div>
+		</div>
+	</body>
+
+	<script type="text/javascript">
+		document.body.onload = init;
+	</script>
+</html>
