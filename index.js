@@ -30,22 +30,34 @@ srv.ro.post("/ptths/:key/:id", LZR.bind(po, po.getPost, LZR.bind(po, po.hdHttps)
 
 // LOGO图片
 srv.ro.get("/clear/", function (req, res) {
-	res.send(po.delSrvs() + " 条服务被清除");
+	var o = po.delSrvs();
+	res.send(o[0] + " 条服务被清除<br/><br/>\n" + o[1]);
 });
 
 // LOGO图片
 srv.ro.get("/favicon.ico", function (req, res) {
-	res.redirect(tools.mUrl + "favicon.ico");
+	res.sendFile("Logo.png", {
+		root: "./common/"
+	});
 });
 
 // 公共样式
 srv.ro.get("/base.css", function (req, res) {
-	res.redirect(tools.mUrl + "css/common/base.css");
+	res.sendFile("base.css", {
+		root: "./common/"
+	});
+});
+srv.ro.get("/block.css", function (req, res) {
+	res.sendFile("block.css", {
+		root: "./common/"
+	});
 });
 
 // 通用工具
 srv.ro.get("/tools.js", function (req, res) {
-	res.redirect(tools.mUrl + "js/tools.js");
+	res.sendFile("tools.js", {
+		root: "./common/"
+	});
 });
 
 // 记录访问信息到 dm 模块中
