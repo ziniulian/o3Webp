@@ -1,0 +1,42 @@
+<html>
+	<head>
+		<title>犟子工作室——MD5加密工具</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=1.0" />
+		<meta charset="utf-8">
+		<script type="text/javascript" src="js/md5.js"></script>
+		<link rel="stylesheet" href="/base.css"/>
+
+		<style type="text/css">
+			.vDoe {
+				width: 100%;
+				line-height: 2;
+				font-size: 2rem;
+				text-align: center;
+				margin: 3rem 0;
+			}
+
+			.rDoe {
+				text-align: center;
+				font-size: 2rem;
+				line-height: 3;
+				color: blue;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="boso">
+			<div class="logo">
+				<a name="dmad_io_home" class="logohome"></a>
+			</div>
+			<div>
+				<input id="vDoe" type="text" class="vDoe" placeholder="请输入" onfocus="this.select();" onchange="rDoe.innerHTML=hex_md5(this.value);"/>
+			</div>
+			<div id="rDoe" class="rDoe"></div>
+		</div>
+	</body>
+
+	<script type="text/javascript">
+		console.log (Math.floor(Date.now() / 1000));
+	</script>
+</html>

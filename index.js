@@ -1,5 +1,6 @@
 // LZR 模块加载
 require("lzr");
+var CryptoJS = require('crypto-js');
 
 // LZR 子模块加载
 LZR.load([
@@ -58,6 +59,12 @@ srv.ro.get("/tools.js", function (req, res) {
 	res.sendFile("tools.js", {
 		root: "./common/"
 	});
+});
+
+// HmacSHA1加密
+srv.ro.get("/calHmacSHA1/:dat/:key/", function (req, res, next) {
+	// console.log (req.params);
+	res.send(CryptoJS.HmacSHA1(req.params.dat, req.params.key).toString(CryptoJS.enc.Base64));
 });
 
 // 记录访问信息到 dm 模块中

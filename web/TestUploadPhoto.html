@@ -1,0 +1,36 @@
+<html>
+	<head>
+		<title>犟子工作室——图片上传测试</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=1.0" />
+		<meta charset="utf-8">
+		<link rel="stylesheet" href="/base.css"/>
+
+		<style type="text/css">
+		</style>
+	</head>
+
+	<body>
+		<div id="boso">
+			<div class="logo">
+				<a name="dmad_io_home" class="logohome"></a>
+			</div>
+			<div>
+				<form method="post" action="https://api.flickr.com/services/upload/" ENCTYPE="multipart/form-data">
+					</br><input type="file" name="photo"/></br>
+					</br><input type="submit" value="upload"/>
+					<input type="hidden" name="oauth_nonce" value="...">
+					<input type="hidden" name="oauth_consumer_key" value="...">
+					<input type="hidden" name="oauth_timestamp" value="...">
+					<input type="hidden" name="oauth_signature_method" value="HMAC-SHA1">
+					<input type="hidden" name="oauth_version" value="1.0">
+					<input type="hidden" name="oauth_token" value="...">
+					<input type="hidden" name="oauth_signature" value="...">
+				</form>
+			</div>
+		</div>
+	</body>
+
+	<script type="text/javascript">
+		console.log (Math.floor(Date.now() / 1000));
+	</script>
+</html>
