@@ -29,7 +29,7 @@ srv.ro.post("/ptth/", LZR.bind(po, po.getPost, LZR.bind(po, po.hdHttp)));
 
 srv.ro.post("/ptths/:key/:id", LZR.bind(po, po.getPost, LZR.bind(po, po.hdHttps)));
 
-// LOGO图片
+// 清空服务
 srv.ro.get("/clear/", function (req, res) {
 	var o = po.delSrvs();
 	res.send(o[0] + " 条服务被清除<br/><br/>\n" + o[1]);
