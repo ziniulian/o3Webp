@@ -16,14 +16,8 @@ var po = new LZR.Node.Srv.O3srvPoxSrv();
 // 服务的实例化
 var srv = new LZR.Node.Srv ({
 	ip: process.env.OPENSHIFT_NODEJS_IP || "0.0.0.0",
-	port: process.env.OPENSHIFT_NODEJS_PORT || 80
+	port: process.env.OPENSHIFT_NODEJS_PORT || 8080
 });
-
-// 需要用到的工具
-var tools = {
-	mUrl: LZR.HTML.domain,
-	dm: null	// 数据库管理模块
-};
 
 srv.ro.post("/ptth/", LZR.bind(po, po.getPost, LZR.bind(po, po.hdHttp)));
 
@@ -67,15 +61,6 @@ srv.ro.get("/calHmacSHA1/:dat/:key/", function (req, res, next) {
 	res.send(CryptoJS.HmacSHA1(req.params.dat, req.params.key).toString(CryptoJS.enc.Base64));
 });
 
-// 记录访问信息到 dm 模块中
-srv.ro.get("/myNam/", function (req, res, next) {
-	var t = tools.dm.getTls();
-	t.qryRo.db.add( req, res, next, null, {
-		ip: t.utNode.getClientIp(req),
-		tim: t.utTim.getTim()
-	}, true );
-});
-
 // 返回服务名
 srv.ro.get("/myNam/", function (req, res) {
 	res.send("Webp");
@@ -84,15 +69,11 @@ srv.ro.get("/myNam/", function (req, res) {
 // LZR库文件访问服务
 srv.ro.setStaticDir("/myLib/", LZR.curPath);
 
-// 数据库管理模块
-tools.dm = require("./DbMgr");
-srv.use("/DbMgr/", tools.dm);
-
 // 静态主页设置
 srv.ro.setStaticDir("/", "./web");
 
 srv.use("*", function (req, res) {
-	res.redirect(tools.mUrl + "Err");
+	res.redirect("https://www.ziniulian.tk/home.html");
 });
 
 // 服务启动
